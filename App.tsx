@@ -7,14 +7,16 @@
 
 import React from 'react';
 import type {PropsWithChildren} from 'react';
+import {ScrollView, StyleSheet, View} from 'react-native';
+
 import {
+  PermissionsAndroid,
   SafeAreaView,
-  ScrollView,
   StatusBar,
-  StyleSheet,
+  TouchableOpacity,
   Text,
+  Image,
   useColorScheme,
-  View,
 } from 'react-native';
 
 import {
@@ -25,41 +27,39 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
+import RTNMyPicker from 'rtn-my-picker/js/NativeMyPicker';
+
 type SectionProps = PropsWithChildren<{
   title: string;
 }>;
-
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  };
+
+  const [imageUri, setImageUri] = React.useState(
+    'https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg',
+  );
+
+  const requestPermissionAsync = async () => {
+    const result = await PermissionsAndroid.requestMultiple([
+      PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES,
+      PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+    ]);
+    console.log('result1', result);
+    if (
+      result['android.permission.READ_MEDIA_IMAGES'] === 'granted' ||
+      result['android.permission.READ_EXTERNAL_STORAGE'] === 'granted'
+    ) {
+      const result = await RTNMyPicker?.pickImage();
+      console.log('result2', result?.slice(0, 30));
+      if (result) {
+        setImageUri(result);
+      }
+    }
   };
 
   return (
@@ -71,26 +71,19 @@ function App(): React.JSX.Element {
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}>
-        <Header />
+        {/* <Header /> */}
         <View
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
+          <Text>oiii</Text>
         </View>
+        <TouchableOpacity onPress={() => requestPermissionAsync()}>
+          <Text style={{fontSize: 30, color: 'red'}}>Capture Photo</Text>
+        </TouchableOpacity>
+        {imageUri !== '' && (
+          <Image source={{uri: imageUri}} style={{width: 300, height: 300}} />
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -116,3 +109,11 @@ const styles = StyleSheet.create({
 });
 
 export default App;
+
+// yarn add ./RTNMyPicker
+
+// node VisionDropOpenCV/node_modules/react-native/scripts/generate-codegen-artifacts.js --path VisionDropOpenCV/ --outputPath VisionDropOpenCV/RTNMyPicker/generated/ --targetPlatform all
+
+// ./gradlew generateCodegenArtifactsFromSchema   |    gradle generateCodegenArtifactsFromSchema
+
+// yarn react-native run-android --active-arch-only

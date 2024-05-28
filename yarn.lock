@@ -8304,6 +8304,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"rtn-my-picker@file:./RTNMyPicker::locator=visionDropOpenCV%40workspace%3A.":
+  version: 0.0.1
+  resolution: "rtn-my-picker@file:./RTNMyPicker#./RTNMyPicker::hash=5c43da&locator=visionDropOpenCV%40workspace%3A."
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: d87407acf226f0c1ac325908519d043c7f8bcb9e04deb58346180a0ae5ed89506f46d1f0f138b50167b240ec082bce2de267cb097871cc0b34bc7aecc939bb2a
+  languageName: node
+  linkType: hard
+
 "run-parallel@npm:^1.1.9":
   version: 1.2.0
   resolution: "run-parallel@npm:1.2.0"
@@ -9329,6 +9339,7 @@ __metadata:
     react: 18.2.0
     react-native: 0.74.1
     react-test-renderer: 18.2.0
+    rtn-my-picker: ./RTNMyPicker
     typescript: 5.0.4
   languageName: unknown
   linkType: soft
